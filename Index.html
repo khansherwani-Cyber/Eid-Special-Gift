@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Premium Gift</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #05050a, #0d0d1f, #180325);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #ffffff;
+            perspective: 1000px;
+            position: relative;
+        }
+
+        /* Canvas Background layer */
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Screen Shake effect on activation */
+        .shake {
+            animation: screenShake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes screenShake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            55% { transform: translate(-1px, 2px) rotate(-1deg); }
+            70% { transform: translate(-3px, 1px) rotate(0deg); }
+            85% { transform: translate(2px, 1px) rotate(-1deg); }
+            100% { transform: translate(1px, -2px) rotate(0deg); }
+        }
+
+        /* Ultra Premium Glassmorphic Card */
+        .card {
+            background: rgba(10, 10, 20, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.25); /* Liquid Gold Accent border */
+            border-radius: 28px;
+            padding: 3rem 2rem;
+            width: 90%;
+            max-width: 430px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 
+                        0 0 50px rgba(212, 175, 55, 0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 10;
+        }
+
+        .card:hover {
+            border-color: rgba(212, 175, 55, 0.45);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 
+                        0 0 60px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Premium Heading Style (Championship Gold) */
+        .premium-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffe259, #ffa751, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 15px rgba(212, 175, 55, 0.25);
+            letter-spacing: 0.5px;
+        }
+
+        .gift-box-container {
+            margin-bottom: 2.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-box-container:hover {
+            transform: scale(1.08);
+        }
+
+        .gift-icon {
+            font-size: 90px;
+            filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.4));
+            animation: float 3.5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+
+        /* Gold-Rose Gradient Premium Button */
+        .btn-open {
+            background: linear-gradient(135deg, #d4af37, #f79c42, #b5179e);
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 40px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-open:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-open:active {
+            transform: translateY(1px);
+        }
+
+        /* Target Emoji Container */
+        .emoji-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 160px;
+            margin: 2rem 0;
+        }
+
+        .emoji-zoom {
+            font-size: 105px;
+            display: inline-block;
+            transform: scale(0);
+            animation: popAndZoom 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.4));
+        }
+
+        @keyframes popAndZoom {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(3.2) rotate(-15deg);
+                opacity: 1;
+            }
+            75% {
+                transform: scale(2.6) rotate(15deg);
+            }
+            100% {
+                transform: scale(2.9) rotate(0deg);
+            }
+        }
+
+        .caption-text {
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .caption-text.show {
+            opacity: 1;
+        }
+
+        /* Footer Credit (Aesthetic design) */
+        .footer {
+            margin-top: 3.5rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            text-align: center;
+            z-index: 5;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .footer span {
+            color: #d4af37;
+            font-weight: 700;
+            text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas for Motion Particles & Rain -->
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="card" id="mainCard">
+        <!-- Before Open state -->
+        <div id="closedState">
+            <h1 class="premium-title">You receive a Premium Gift from JARRAR KHAN</h1>
+            
+            <div class="gift-box-container" onclick="openGift()">
+                <div class="gift-icon">🎁</div>
+            </div>
+            <button class="btn-open" onclick="openGift()">Open Gift</button>
+        </div>
+
+        <!-- After Open state -->
+        <div class="emoji-container" id="emojiContainer">
+            <span class="emoji-zoom" id="emoji">🖕</span>
+        </div>
+        <p class="caption-text" id="captionText">Surprise! 🎉</p>
+    </div>
+
+    <!-- Footer credit -->
+    <div class="footer">
+        A special gift sent by <span>JARRAR KHAN</span>
+    </div>
+
+    <script>
+        // --- Dynamic Canvas Rain and Particle System ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        const rain = [];
+
+        // Golden premium floating particles
+        for (let i = 0; i < 45; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 2.5 + 1,
+                speedX: Math.random() * 0.4 - 0.2,
+                speedY: Math.random() * -0.4 - 0.1, // floating upwards
+                alpha: Math.random() * 0.5 + 0.3,
+                color: Math.random() > 0.4 ? '#d4af37' : '#ffd700'
+            });
+        }
+
+        // Falling neon-violet rain drops
+        for (let i = 0; i < 55; i++) {
+            rain.push({
+                x: Math.random() * width,
+                y: Math.random() * height - height,
+                length: Math.random() * 20 + 8,
+                speedY: Math.random() * 5 + 6,
+                speedX: Math.random() * 0.8 - 0.4,
+                alpha: Math.random() * 0.25 + 0.1
+            });
+        }
+
+        function drawBackgroundLayer() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw Purple Rain streaks
+            ctx.lineWidth = 1.2;
+            for (let r of rain) {
+                ctx.strokeStyle = `rgba(139, 92, 246, ${r.alpha})`;
+                ctx.beginPath();
+                ctx.moveTo(r.x, r.y);
+                ctx.lineTo(r.x + r.speedX, r.y + r.length);
+                ctx.stroke();
+
+                r.y += r.speedY;
+                r.x += r.speedX;
+
+                if (r.y > height) {
+                    r.y = -r.length;
+                    r.x = Math.random() * width;
+                }
+            }
+
+            // Draw Golden Particles
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.alpha;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+                ctx.shadowBlur = 0; // reset shadow for performance
+
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x < 0 || p.x > width) p.speedX *= -1;
+                if (p.y < 0) {
+                    p.y = height;
+                    p.x = Math.random() * width;
+                }
+            }
+            ctx.globalAlpha = 1.0;
+
+            requestAnimationFrame(drawBackgroundLayer);
+        }
+
+        // Start animation loop
+        drawBackgroundLayer();
+
+
+        // --- Gift Reveal Event Logic ---
+        function openGift() {
+            document.getElementById('closedState').style.display = 'none';
+            document.getElementById('emojiContainer').style.display = 'flex';
+            
+            const caption = document.getElementById('captionText');
+            caption.classList.add('show');
+
+            // Play screen shake
+            document.body.classList.add('shake');
+            setTimeout(() => {
+                document.body.classList.remove('shake');
+            }, 1500);
+
+            // Play sound effects
+            playLoudFaaaSound();
+        }
+
+        function playLoudFaaaSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.type = 'sawtooth'; 
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 1.2); 
+
+                const distortion = audioCtx.createWaveShaper();
+                distortion.curve = makeDistortionCurve(400);
+                distortion.oversample = '4x';
+
+                osc.connect(distortion);
+                distortion.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                gainNode.gain.setValueAtTime(1.0, audioCtx.currentTime); 
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2.0);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 2.0);
+
+                // Speak voice output
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance("FAAAAAAA");
+                    utterance.volume = 1.0; 
+                    utterance.pitch = 1.8;  
+                    utterance.rate = 1.1;   
+                    window.speechSynthesis.speak(utterance);
+                }
+
+            } catch (e) {
+                console.log("Audio process issue:", e);
+            }
+        }
+
+        function makeDistortionCurve(amount) {
+            const k = typeof amount === 'number' ? amount : 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                const x = (i * 2) / n_samples - 1;
+                curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        }
+    </script>
+</body>
+</html>
